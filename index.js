@@ -3,6 +3,7 @@ const app = express()
 const port = 3000
 const postRouter = require("./routes/posts")
 const connect = require("./schema") //몽고디비와 연결
+require("dotenv").config()
 connect() 
 
 app.use(express.urlencoded())
