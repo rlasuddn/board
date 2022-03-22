@@ -3,16 +3,16 @@ const Post = require("../schema/post")
 const router = express.Router()
 const moment = require("moment")
 
-
 //전체 조회
-router.get("/views",async(req,res)=>{
+router.get("/",async(req,res)=>{
     const post = await Post.find().sort({date: -1}) //날짜 내림차순
     res.render('update_index',{post}) // ejs를 렌더링, post를 넘겨준다.
 })
 //게시글생성
 router.post("/create",async(req,res)=>{
     const {title, name, pw, content} = req.body  //body에서 값을 받아온다.
-    const date = moment().format("YYYY-MM-DD HH:mm") //날짜를 변경해준다.
+    const date = moment().format("YYYY-MM-DD HH:mm:ss") //날짜를 변경해준다.
+    console.log(date)
     const CreatePost = await Post.create({title, name, pw, content, date}) //게시글을 받아온 값으로 생성한다.
     res.json({result : "success"}) //응답을 보낸다.
 })

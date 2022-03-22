@@ -15,7 +15,7 @@ app.set('views',__dirname+'/views')
 app.set('view engine','ejs')
 //전체 조회(메인)
 app.get('/',(req,res)=>{
-    res.redirect('/post/views')
+    res.redirect('/post')
 })
 //상세조회
 app.get('/detail/:id',(req,res)=>{
