@@ -6,7 +6,7 @@ const connect = require("./schema") //몽고디비와 연결
 require("dotenv").config()
 connect() 
 
-app.use(express.urlencoded())
+app.use(express.urlencoded({extended : false}))
 app.use(express.json())
 //라우터 사용
 app.use("/post",[postRouter])
