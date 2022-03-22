@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 const connect = () =>{
-    mongoose.connect("mongodb://localhost:27017/homework_blog",{ignoreUndefined: true}).catch((err)=>{  //mogodb와 연결시 오류가 나면 콘솔창에 띄워준다.
+    mongoose.connect("mongodb://test:test@27017/homework_blog",{ignoreUndefined: true}).catch((err)=>{  //mogodb와 연결시 오류가 나면 콘솔창에 띄워준다.
         console.error(err)
     })
 }
