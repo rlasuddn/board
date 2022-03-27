@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+    crossorigin="anonymous">
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
+<script
+    src="https://code.jquery.com/jquery-3.5.1.js"
+    integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
+    <title>Document</title>
+    <script>
+        $(document).ready(function(){
+            if(localStorage.getItem("token")){
+                alert("You already login")
+                window.location.href="/post"
+            }
+        })
+        function login(){
+            let email = $('#email').val()
+            let password = $('#password').val()
+            $.ajax({
+                    type: "post",
+                    url: `/login`,
+                    data: {
+                        email:email,
+                        password:password,
+                    },
+                    success: function (response) {
+                        alert(response["Message"]);
+                        localStorage.setItem("token",response.token)
+                        window.location.href = '/post'
+                    },
+                    error: function (request,status,error) {
+                        alert(request.responseJSON["Message"]);
+                    }
+                });
+        }
+    </script>
+</head>
+<body>
+    <h1>login</h1>
+    <input id="email"type="text">
+    <input id="password"type="password">
+    <button onclick="login()" class="btn btn-outline-secondary" type="button">Login</button>
+    <button onclick="window.location.href='/join'" class="btn btn-outline-secondary" type="button">Join</button>
+</body>
+</html>

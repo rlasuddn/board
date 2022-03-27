@@ -19,13 +19,43 @@
             crossorigin="anonymous"></script>
         <title>Document</title>
         <script>
+            let userId;
             $(document).ready(function () {
-                posting();
+                if (localStorage.getItem("token")) {
+                getSelf(function(user){
+                    userId = user
+                })
+              }  
+              posting();
+              comments()
             });
-            function posting() { 
+            
+            function getSelf(callback) {
                 $.ajax({
                     type: "GET",
-                    url: `/post/views/<%=id["id"]%>`,
+                    url: "/user/check",
+                    headers: {
+                    authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                    success: function (response) {
+                        callback(response.user.nickname)
+                    },
+                    error: function (xhr, status, error) {
+                        if (status == 401) {
+                            alert("로그인이 필요합니다.");
+                        } else {
+                            localStorage.clear();
+                            alert("알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요.");
+                        }
+                        window.location.href = "/login";
+                        },
+                });
+             }
+            
+            function posting() {
+                $.ajax({
+                    type: "GET",
+                    url: `/views/<%=id["id"]%>`,
                     data: {},
                     success: function (response) {
                         let post = response["post"]
@@ -39,14 +69,35 @@
 
             function update_post() {
                 let checkPw = prompt("비밀번호를 입력해주세요")
-                
+
                 $.ajax({
                     type: "PATCH",
-                    url: `/post/update/<%= id["id"] %>`,
+                    url: `/update/<%= id["id"] %>`,
                     data: {
                         title: $("#title").val(),
                         content: $("#content").val(),
                         pw: checkPw
+                    },
+                    success: function (response) {
+                        if (response["result"] === "success") {
+                            window.location.href = '/'
+                        }
+                    },
+                    error: function (request, status, error) {
+                        alert(request.responseJSON["result"]);
+                    }
+                });
+            }
+
+            function delete_post() {
+                let checkPw = prompt("비밀번호를 입력해주세요")
+                let content = $('#content').val()
+                $.ajax({
+                    type: "DELETE",
+                    url: `/delete/<%= id["id"] %>`,
+                    data: {
+                        pw: checkPw,
+                        content: content
                     },
                     success: function (response) {
                         if (response["result"] === "success") {
@@ -57,24 +108,152 @@
                     }
                 });
             }
-
-            function delete_post() {
-                let checkPw = prompt("비밀번호를 입력해주세요")
-                let content = $('#content').val()
+            
+            function comments() {
                 $.ajax({
-                    type: "DELETE",
-                    url: `/post/delete/<%= id["id"] %>`,
+                    type: "GET",
+                    url: '/comments/<%=id["id"]%>',
+                    data: {},
+                    success: function (response) {
+                        comments = response['comments']
+                        for (i = 0; i < comments.length; i++) {
+                            let comment = comments[i]['comment']
+                            let name = comments[i]['name']
+                            let id = comments[i]['id']
+                            makeComment(comment,name,id)
+                        }
+                    }
+                })
+            }
+            function makeComment(comment,name,id){
+                if(userId === name){
+                    console.log(userId)
+                const tempHtml = ` 
+                <tr>
+                    <td>${name}</td>
+                    <td>${comment}</td>
+                    <td>
+                        <button
+                            style="display: none;"      
+                            id="deleteButton${id}"
+                            onclick="deleteComment(${id})"
+                            class="btn btn-outline-secondary"
+                            type="button">Delete
+                        </button>
+                        <button
+                            id="showUpdate"
+                            onclick="updateButton(${id})"
+                            class="btn btn-outline-secondary"
+                            type="button">Update
+                        </button>
+                    </td> 
+                    <td>
+                        <input
+                            style="display: none;"
+                            id="update_comment${id}"
+                            type="text"
+                            class="form-control update"
+                            placeholder="${comment}"
+                            aria-label="comment"
+                            aria-describedby="basic-addon1">
+                    </td>
+                    <td> 
+                        <button
+                            style="display: none;"
+                            id="updateButton${id}"
+                            onclick="updateComment(${id})"
+                            class="btn btn-outline-secondary"
+                            type="button">Send
+                        </button>
+                    </td>
+                <tr>
+                `
+                $('#comment-list').append(tempHtml)      
+                }else{
+                    const tempHtml = ` 
+                    <tr>
+                        <td>${name}</td>
+                        <td>${comment}</td>
+                        <td>
+                    </tr>`
+                    $('#comment-list').append(tempHtml) 
+                }        
+        }
+
+            function updateButton(id){
+                $(`#update_comment${id}`).show()
+                $(`#updateButton${id}`).show()
+                $(`#showUpdate${id}`).show()
+                $(`#deleteButton${id}`).show()
+                     
+            }
+            
+            function deleteComment(commentId) {
+                if (confirm("really????")) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: '/comments',
+                        data: {
+                            commentid: commentId
+                        },
+                        success: function (response) {
+                            window.location.reload()
+                        },
+                        error: function(response){
+                            alert(response['Message'])
+                            window.location.reload()
+                        }
+                    })
+                }
+            }
+        
+            function updateComment(commentId){
+                let comment = $(`#update_comment${commentId}`).val()
+                
+                $.ajax({
+                        type: "PATCH",
+                        url: '/comments',
+                        data: {
+                            commentid: commentId,
+                            comment:comment
+                        },
+                        success: function (response) {
+                            
+                            window.location.reload()
+                        },
+                        error: function(response){
+                            alert(response['Message'])
+                            window.location.reload()
+                        }
+                    })
+            }
+
+            function writeComment() {
+                if (!localStorage.getItem("token")) {
+                    alert("login first!")
+                    window.location.href = "/login"
+                }
+                let comment = $('#comment').val()
+                $.ajax({
+                    type: "POST",
+                    url: '/comments/<%=id["id"]%>',
                     data: {
-                        pw: checkPw,
-                        content:content
+                        comment: comment
+                    },
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     success: function (response) {
-                        console.log(response)
-                        if (response["result"] === "success") {
-                            window.location.href = '/'
-                        } else {
-                            alert(response["result"])
-                        }
+                        alert(response['Message'])
+                        window
+                            .location
+                            .reload()
+                    },
+                    error: function (request, status, error) {
+                        alert(request.responseJSON["Message"]);
+                        window
+                            .location
+                            .reload()
                     }
                 });
             }
@@ -106,8 +285,7 @@
                 </div>
             </div>
         </nav>
-
-        <div class="input-box">
+        <div  class="input-box">
             <div class="input-group mb-3">
                 <span class="input-group-text">title</span>
                 <input
@@ -130,7 +308,7 @@
             <div class="input-group mb-3">
                 <span class="input-group-text">name</span>
                 <input
-                    disabled
+                    disabled="disabled"
                     id="name"
                     type="text"
                     class="form-control"
@@ -147,6 +325,31 @@
                 <button onclick="delete_post()" class="btn btn-outline-secondary" type="button">Delete</button>
             </div>
 
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">NAME</th>
+                    <th scope="col">TITLE</th>
+                </tr>
+            </thead>
+            <tbody id="comment-list">
+            </tbody>
+        </table>
+        <div class="input-group mb-3">
+            <span class="input-group-text">comment</span>
+            <input
+                id="comment"
+                type="text"
+                class="form-control"
+                placeholder="comment"
+                aria-label="comment"
+                aria-describedby="basic-addon1">
+            <button
+                onclick="writeComment()"
+                class="btn btn-outline-secondary"
+                type="button">Send</button>
         </div>
     </body>
 </html>
