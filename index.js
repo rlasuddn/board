@@ -22,7 +22,7 @@ app.get('/',(req,res)=>{
 //상세조회
 app.get('/detail/:id',(req,res)=>{
     let id = req.params
-    res.render('detail', {id:id})
+    res.render('detail', {id})
 })
 //게시물생성
 app.get('/create',(req,res)=>{

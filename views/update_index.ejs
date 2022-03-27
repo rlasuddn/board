@@ -74,7 +74,7 @@
             </thead>
             <tbody id="posting"></tbody>
             <% post.forEach(posts => { %>   <!--post 데이터를 반복해서 나타내준다. -->
-                <tr onclick="location.href='/detail/<%=posts._id%>'">
+                <tr onclick="location.href='/detail/<%=posts.id%>'">
                     <td><%=posts.date %></td>
                     <td><%=posts.title %></td>
                     <td><%=posts.name %></td>

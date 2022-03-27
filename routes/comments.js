@@ -6,7 +6,7 @@ const LoginCheck = require("../middlewares/login-check")
 router.get('/comments/:postid',async(req,res)=>{
     
     const{postid} = req.params
-    const comments = await Comment.find({postid})
+    const comments = await Comment.find({postid}).sort({id:-1})
     res.send({
         comments
     })
@@ -23,15 +23,15 @@ router.post('/comments/:postid',LoginCheck,async(req,res)=>{
         }) 
     }catch(err){
         res.status(401).send({
-            Message:"create"
+            Message:"Please enter it."
         })
     }
 })
 
 router.delete('/comments',async(req,res)=>{
     try{
-        const{commentid} = req.body
-        await Comment.deleteOne({id:commentid})
+        const{id} = req.body
+        await Comment.deleteOne({id})
         res.send({
             Message:"success"
         })
@@ -45,12 +45,17 @@ router.delete('/comments',async(req,res)=>{
 
 router.patch('/comments',async(req,res)=>{
     try{
-        const{commentid, comment} = req.body
-        const comments = await Comment.findOne({commentid})
+        const{id, comment} = req.body
+        if(comment === ""){
+            res.send({
+                Message:"Please enter it."
+            })
+            return
+        }
+        const comments = await Comment.findOne({id})
 
-        console.log(commentid,comment)
         if(comments){
-            await Comment.updateOne({id:commentid},{$set:{comment:comment}})
+            await Comment.updateOne({id},{$set:{comment}})
         
         res.send({
             Message:"success"

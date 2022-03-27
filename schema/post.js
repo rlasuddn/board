@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
-const Schema = mongoose.Schema({
+const autoIdSetter = require('./auto-id-setter');
+const Post = mongoose.Schema({
     content:{
         type:String,
         required:true,
@@ -20,5 +21,5 @@ const Schema = mongoose.Schema({
         required:true,
     }
 })
-
-module.exports = mongoose.model("Post",Schema)
+autoIdSetter(Post, mongoose, 'Post', 'id');
+module.exports = mongoose.model("Post",Post)
