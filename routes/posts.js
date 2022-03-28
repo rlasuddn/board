@@ -17,19 +17,20 @@ router.post("/create",LoginCheck,async(req,res)=>{
     const {title,pw,content} = req.body  //body에서 값을 받아온다.
     const date = moment().format("YYYY-MM-DD HH:mm:ss") //날짜를 변경해준다.
     const bcryptPw = bcrypt.hashSync(pw,10)
-    const CreatePost = await Post.create({title, name:user.nickname, pw:bcryptPw, content, date}) //게시글을 받아온 값으로 생성한다.
+    await Post.create({title, name:user.nickname, pw:bcryptPw, content, date}) //게시글을 받아온 값으로 생성한다.
     res.json({result : "success"}) //응답을 보낸다.
 })
 //상세조회
 router.get("/views/:id",async(req,res)=>{
     const {id} = req.params //파라미터를 받고
     const post = await Post.findOne({id})//빋아온 값이 있는 데이터를 찾아온다.
-    res.json({post:{
+    //응답으로 데이터를 보낸다.
+    res.json({post:{            
         content:post.content,
         date:post.date,
         name:post.name,
         title:post.title
-    }}) //응답으로 데이터를 보낸다.
+    }}) 
 })
 //게시글수정
 router.patch("/update/:id",async(req,res)=>{

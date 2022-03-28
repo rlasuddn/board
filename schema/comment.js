@@ -14,5 +14,5 @@ const Schema = new mongoose.Schema({
         required:true,
     }
 })
-autoIdSetter(Schema, mongoose, 'Schema', 'id');
+autoIdSetter(Schema, mongoose, 'Schema', 'id'); //Schema 의 id를 만들어준다.
 module.exports = mongoose.model("Comment",Schema)

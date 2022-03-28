@@ -19,17 +19,39 @@
         crossorigin="anonymous"></script>
         <title>Document</title>
         <script>
+            //로그인을 한 유저면 버튼들을 보이거나 숨기고 함수를 실행한다.
         $(document).ready(function () {
             if(localStorage.getItem("token")){
                 $('#login').hide()
                 $('#join').hide()
                 $('#logout').show()
+                getSelf()
             }else{
                 $('#login').show()
                 $('#join').show()
                 $('#logout').hide()
             }
        })
+       function getSelf() {
+                $.ajax({
+                    type: "GET",
+                    url: "/user/check",
+                    headers: {
+                        authorization: `Bearer ${localStorage.getItem("token")}`
+                    },
+                    success: function (response) {
+                        nickname = response.user.nickname
+                        showprofile(nickname)
+                    },
+                    error: function () {
+                    }
+                })
+            }
+            
+       function showprofile(name) {
+           let tempHtml = `<a class="nav-link" href="">${name}</a>`
+            $('.nickname').append(tempHtml)
+             }
 
        function logout(){
            localStorage.clear()
@@ -58,6 +80,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/create">Create</a>
+                        </li>
+                        <li class="nav-item nickname">
+                            
                         </li>
                     </ul>
                 </div>

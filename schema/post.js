@@ -21,5 +21,5 @@ const Post = mongoose.Schema({
         required:true,
     }
 })
-autoIdSetter(Post, mongoose, 'Post', 'id');
+autoIdSetter(Post, mongoose, 'Post', 'id'); //Post의 id를 생성해준다.
 module.exports = mongoose.model("Post",Post)

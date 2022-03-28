@@ -29,6 +29,8 @@
             //         userId = user
             //     })   
             // }
+
+            //조건문으로 함수를 실행한다.
             if (localStorage.getItem("token")){
                 getSelf()
             }else{
@@ -45,12 +47,13 @@
                     success: function (response) {
                         nickname = response.user.nickname
                         userComments(nickname)
+                        showprofile(nickname)
                     },
                     error: function () {
                     }
                 })
             }
-    })
+        })
     
             // function getSelf(callback) {
             //     $.ajax({
@@ -73,7 +76,8 @@
             //             },
             //     });
             //  }
-        
+            
+            //사용자가 입력한 정보를 그대로 보여준다.
             function posting() {
                 $.ajax({
                     type: "GET",
@@ -89,6 +93,7 @@
                 });
             }
 
+            //게시글 수정
             function update_post() {
                 let checkPw = prompt("비밀번호를 입력해주세요")
 
@@ -111,6 +116,7 @@
                 });
             }
 
+            //게시글 삭제
             function delete_post() {
                 let checkPw = prompt("비밀번호를 입력해주세요")
                 let content = $('#content').val()
@@ -131,6 +137,8 @@
                 });
             }
             
+            //로그인 한 시용자의 댓글 조회
+            //유저의 이름을 받아와서 함수들에 전달해준다.
             function userComments(nickname) {
                 $.ajax({
                     type: "GET",
@@ -149,33 +157,6 @@
                     }
                 })
             }
-
-            function comments() {
-                $.ajax({
-                    type: "GET",
-                    url: '/comments/<%=id["id"]%>',
-                    data: {},
-                    success: function (response) {
-                        comments = response['comments']
-                        for (i = 0; i < comments.length; i++) {
-                            let comment = comments[i]['comment']
-                            let name = comments[i]['name']
-                            let id = comments[i]['id']
-                            makeComment(comment,name,id)
-                        }
-                    }
-                })
-            }
-
-            function makeComment(comment,name,id){
-                const tempHtml = ` <tr>
-                                    <td>${name}</td>
-                                    <td>${comment}</td>
-                                    <td>
-                                 </tr>`
-                $('#comment-list').append(tempHtml) 
-            }
-
             function userMakeComment(comment,name,id){
                 const tempHtml = ` 
                 <tr>
@@ -186,7 +167,7 @@
                             style="display: none;"
                             id="showUpdate${id}"
                             onclick="updateButton(${id})"
-                            class="btn btn-outline-secondary"
+                            class="btn btn-outline-warning"
                             type="button">Update
                         </button>
                     </td> 
@@ -205,14 +186,14 @@
                             style="display: none;"      
                             id="deleteButton${id}"
                             onclick="deleteComment(${id})"
-                            class="btn btn-outline-secondary"
+                            class="btn btn-outline-danger"
                             type="button">Delete
                         </button>
                         <button
                             style="display: none;"
                             id="updateButton${id}"
                             onclick="updateComment(${id})"
-                            class="btn btn-outline-secondary"
+                            class="btn btn-outline-info"
                             type="button">Send
                         </button>
                         <button
@@ -227,7 +208,34 @@
                 `
                 $('#comment-list').append(tempHtml)         
         }
-    
+            
+            //로그인을 안한 사용자의 댓글 조회
+            function comments() {
+                $.ajax({
+                    type: "GET",
+                    url: '/comments/<%=id["id"]%>',
+                    data: {},
+                    success: function (response) {
+                        comments = response['comments']
+                        for (i = 0; i < comments.length; i++) {
+                            let comment = comments[i]['comment']
+                            let name = comments[i]['name']
+                            
+                            makeComment(comment,name)
+                        }
+                    }
+                })
+            }
+            function makeComment(comment,name){
+                const tempHtml = ` <tr>
+                                    <td>${name}</td>
+                                    <td>${comment}</td>
+                                    <td>
+                                 </tr>`
+                $('#comment-list').append(tempHtml) 
+            }
+
+            //로그인한 사용자의 이름과 댓글 작성자의 이름이 같으면 해당댓글의 버튼을 보여준다.
             function showUpdateButton(name,nickname,id){
                 console.log(nickname,name)
                 if(name === nickname){
@@ -235,10 +243,10 @@
                 }
             }
 
+            //보여준 버튼을 누르면 실행된다.
             function updateButton(id){
                 $(`#update_comment${id}`).show()
                 $(`#updateButton${id}`).show()
-                $(`#showUpdate${id}`).show()
                 $(`#deleteButton${id}`).show()
                 $(`#closeButton${id}`).show()
                 $(`#commentName${id}`).hide()   
@@ -246,10 +254,12 @@
                 $(`#showUpdate${id}`).hide()   
             }
 
+            //닫기 버튼을 누르면 실행된다.
             function closeUpdate(){
                 window.location.reload()
             }
             
+            //댓글 삭제
             function deleteComment(commentId) {
                 if (confirm("really????")) {
                     $.ajax({
@@ -269,6 +279,7 @@
                 }
             }
         
+            //댓글 수정
             function updateComment(commentId){
                 let comment = $(`#update_comment${commentId}`).val()
                 
@@ -290,6 +301,8 @@
                     })
             }
 
+            // 댓글 작성
+            // 로그인한 유저만 가능하고 아무것도 입력을 안하면 메세지를 띄워준다.
             function writeComment() {
                 let comment = $('#comment').val()
                 $.ajax({
@@ -315,6 +328,12 @@
                     }
                 });
             }
+            
+            //로그인한 사용자의 이름을 보여준다.
+            function showprofile(name) {
+           let tempHtml = `<a class="nav-link" href="">${name}</a>`
+            $('.nickname').append(tempHtml)
+             }
         </script>
     </head>
     <body>
@@ -339,10 +358,13 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/create">Create</a>
                         </li>
+                        <li class="nav-item nickname">
+                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
+
         <div  class="input-box">
             <div class="input-group mb-3">
                 <span class="input-group-text">title</span>
@@ -379,8 +401,8 @@
                     type="text"
                     class="form-control"
                     aria-label="Amount (to the nearest dollar)">
-                <button onclick="update_post()" class="btn btn-outline-secondary" type="button">Update</button>
-                <button onclick="delete_post()" class="btn btn-outline-secondary" type="button">Delete</button>
+                <button onclick="update_post()" class="btn btn-outline-warning" type="button">Update</button>
+                <button onclick="delete_post()" class="btn btn-outline-danger" type="button">Delete</button>
             </div>
 
         </div>
@@ -396,7 +418,7 @@
                 aria-describedby="basic-addon1">
             <button
                 onclick="writeComment()"
-                class="btn btn-outline-secondary"
+                class="btn btn-outline-success"
                 type="button">Send</button>
         </div>
         

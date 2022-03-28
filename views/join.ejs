@@ -19,6 +19,7 @@
     crossorigin="anonymous"></script>
     <title>Document</title>
     <script>
+        //로그인을 한 유저이면 게시글 목록으로 이동한다.
           $(document).ready(function(){
             if(localStorage.getItem("token")){
                 alert("You already login")
@@ -52,11 +53,43 @@
     </script>
 </head>
 <body>
-    <h1>join</h1>
-    <input id ="email"type="text">
-    <input id="nickname" type="text">
-    <input id="password" type="password">
-    <input id="confirmPassword" type="password">
-    <button onclick="join()" class="btn btn-outline-secondary" type="button">Hello?</button>
+    <h1 style="text-align: center; margin-top: 50px;">항해 Log</h1>
+<div style="width: 900px; height: 300px; margin: 100px auto;">
+    <div class="form-box">
+        <div class="row mb-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+                <input style="margin-right: 10px" type="email" class="form-control" id="email"
+                       placeholder="아이디는 3자이상 영문자와 숫자만 가능합니다."> 
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">Nickname</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="nickname"
+                       placeholder="닉네임은 한글 영문 숫자만 가능합니다.">
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="password"
+                       placeholder="닉네임과 다른 4자이상만 가능합니다.">
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">Check Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="confirmPassword" placeholder="비밀번호를 확인해 주세요.">
+            </div>
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 30px;">
+            <button onclick="join()" type="button" class="btn btn-outline-secondary">Hanghae Log</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

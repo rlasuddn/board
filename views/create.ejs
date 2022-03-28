@@ -19,6 +19,7 @@
             crossorigin="anonymous"></script>
         <title>Document</title>
         <script>
+             //로그인을 한 유저이면 게시글 목록으로 이동한다.
             $(document).ready(function () {
                 if (!localStorage.getItem("token")) {
                     alert("Login first!")
