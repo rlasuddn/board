@@ -40,7 +40,7 @@
                         alert(response["Message"]);
                         //localstrorage 에 "token"을 만들고 그안에 응답받은 token을 넣는다.
                         localStorage.setItem("token",response.token)
-                        window.location.href = '/post'
+                        window.location.href = '/'
                     },
                     error: function (request,status,error) {
                         alert(request.responseJSON["Message"]);
