@@ -7,7 +7,7 @@ const LoginCheck = require("../middlewares/login-check")
 
 
 //전체 조회
-router.get("/post",async(req,res)=>{
+router.get("/",async(req,res)=>{
     const post = await Post.find().sort({date: -1}) //날짜 내림차순
     res.render('update_index',{post}) // ejs를 렌더링, post를 넘겨준다.
 })
