@@ -40,7 +40,7 @@
                         authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     success: function (response) {
-                        nickname = response.user.nickname
+                        nickname = response.nickname
                         showprofile(nickname)
                     },
                     error: function () {
