@@ -71,9 +71,10 @@ router.patch('/comments',async(req,res)=>{
 
 //로그인 체크
 router.get('/user/check',LoginCheck,async(req,res)=>{
-    const{user} = res.locals
-    
-    res.send({user})
+    const {user} = res.locals
+    res.send({
+        nickname:user.nickname
+    })
 })
 
 module.exports = router

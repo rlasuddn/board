@@ -23,7 +23,7 @@
         $(document).ready(function(){
             if(localStorage.getItem("token")){
                 alert("You already login")
-                window.location.href="/post"
+                window.location.href="/"
             }
         })
         function login(){
@@ -50,7 +50,7 @@
     </script>
 </head>
 <body>
-    <h1 style="text-align: center; margin-top: 50px;">항해 Log</h1>
+    <h1 style="text-align: center; margin-top: 50px;" onclick="window.location.href='/'">항해 Log</h1>
     <div style="width: 900px; height: 300px; margin:100px auto">
         <div class="form-box">
             <div class="row mb-3">

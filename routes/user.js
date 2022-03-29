@@ -9,7 +9,8 @@ const jwt = require("jsonwebtoken")
 router.post('/join',membershipForm, async (req, res) => {
     const {email, nickname, password, confirmpassword} = req.body
     try{
-        if(email === password){
+        if(password.search(email) > -1){
+            console.log(password.search(email))
             res.status(401).send({
                 Message:"Email and password match!!"
             })

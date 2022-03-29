@@ -45,7 +45,7 @@
                         authorization: `Bearer ${localStorage.getItem("token")}`
                     },
                     success: function (response) {
-                        nickname = response.user.nickname
+                        nickname = response.nickname
                         userComments(nickname)
                         showprofile(nickname)
                     },
@@ -95,6 +95,16 @@
 
             //게시글 수정
             function update_post() {
+                    if(!localStorage.getItem("token")){
+                    alert("Login first!!!")
+                    window.location.href="/"
+                    return
+                }
+                if(localStorage.getItem("token")){
+                    alert("You already login")
+                    window.location.href="/"
+                }
+
                 let checkPw = prompt("비밀번호를 입력해주세요")
 
                 $.ajax({
@@ -118,6 +128,11 @@
 
             //게시글 삭제
             function delete_post() {
+                if(!localStorage.getItem("token")){
+                    alert("Login first!!!")
+                    window.location.href="/"
+                    return
+                }
                 let checkPw = prompt("비밀번호를 입력해주세요")
                 let content = $('#content').val()
                 $.ajax({
@@ -177,7 +192,7 @@
                             id="update_comment${id}"
                             type="text"
                             class="form-control update"
-                            placeholder="${comment}"
+                            value="${comment}"
                             aria-label="comment"
                             aria-describedby="basic-addon1">
                     </td>
