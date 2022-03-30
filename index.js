@@ -4,12 +4,21 @@ const port = 3000
 const postRouter = require("./routes/posts")
 const UserRouter = require("./routes/user")
 const CommentRouter = require("./routes/comments")
+const helmet = require("helmet")
 const connect = require("./schema") //몽고디비와 연결
 require("dotenv").config()
 connect() 
 
 app.use(express.urlencoded({extended : false}))
 app.use(express.json())
+//x-powered-by 숨기기
+app.disable('x-powered-by')
+//헬멧사용
+app.use(
+    helmet({
+      contentSecurityPolicy: false,
+    })
+  );
 //라우터 사용
 app.use("/",[postRouter,UserRouter,CommentRouter])
 // ejs 사용

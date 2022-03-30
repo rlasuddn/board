@@ -44,15 +44,17 @@
                     },
                     success: function (response) {
                         console.log(response['result'])
+
                         if (response["result"] === "success") {
                             alert(response["result"])
                             window.location.href = "/"
                         } else {
-                            alert(response["Message"])
+                            alert(response["result"])
+                            window.location.reload()
                         }
                     },
                     error: function (request, status, error) {
-                        alert(request.responseJSON["Message"]);
+                        alert(request.responseJSON["result"]);
                         window.location.href = "/login"
                     }
                 });

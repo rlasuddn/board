@@ -100,11 +100,6 @@
                     window.location.href="/"
                     return
                 }
-                if(localStorage.getItem("token")){
-                    alert("You already login")
-                    window.location.href="/"
-                }
-
                 let checkPw = prompt("비밀번호를 입력해주세요")
 
                 $.ajax({
@@ -117,7 +112,10 @@
                     },
                     success: function (response) {
                         if (response["result"] === "success") {
+                            alert(response['result'])
                             window.location.href = '/'
+                        }else{
+                            alert(response['result'])
                         }
                     },
                     error: function (request, status, error) {
