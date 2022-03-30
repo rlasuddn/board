@@ -1,82 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-    crossorigin="anonymous">
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-    crossorigin="anonymous"></script>
-<script
-    src="https://code.jquery.com/jquery-3.5.1.js"
-    integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
-    crossorigin="anonymous"></script>
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <title>Document</title>
     <script>
-         //로그인을 한 유저이면 게시글 목록으로 이동한다.
-        $(document).ready(function(){
-            if(localStorage.getItem("token")){
-                alert("You already login")
-                window.location.href="/"
-            }
-        })
-        function login(){
-            let email = $('#email').val()
-            let password = $('#password').val()
-            $.ajax({
-                    type: "post",
-                    url: `/login`,
-                    data: {
-                        email:email,
-                        password:password,
-                    },
-                    success: function (response) {
-                        alert(response["Message"]);
-                        //localstrorage 에 "token"을 만들고 그안에 응답받은 token을 넣는다.
-                        localStorage.setItem("token",response.token)
-                        window.location.href = '/'
-                    },
-                    error: function (request,status,error) {
-                        alert(request.responseJSON["Message"]);
-                    }
-                });
+      //로그인을 한 유저이면 게시글 목록으로 이동한다.
+      $(document).ready(function () {
+        if (localStorage.getItem("token")) {
+          alert("You already login");
+          window.location.href = "/";
         }
+      });
+      function login() {
+        let email = $("#email").val();
+        let password = $("#password").val();
+        $.ajax({
+          type: "post",
+          url: `/login`,
+          data: {
+            email: email,
+            password: password,
+          },
+          success: function (response) {
+            alert(response["Message"]);
+            //localstrorage 에 "token"을 만들고 그안에 응답받은 token을 넣는다.
+            localStorage.setItem("token", response.token);
+            window.location.href = "/";
+          },
+          error: function (request, status, error) {
+            alert(request.responseJSON["Message"]);
+          },
+        });
+      }
     </script>
-</head>
-<body>
-    <h1 style="text-align: center; margin-top: 50px;" onclick="window.location.href='/'">항해 Log</h1>
-    <div style="width: 900px; height: 300px; margin:100px auto">
-        <div class="form-box">
-            <div class="row mb-3">
-                <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
-                <div class="col-sm-10">
-                    <input style="margin-right: 10px" type="email" class="form-control" id="email"
-                           placeholder="아이디는 3자이상 영문자와 숫자만 가능합니다."> 
-                </div>
-            </div>
-    
-            <div class="row mb-3">
-                <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
-                <div class="col-sm-10">
-                    <input type="password" class="form-control" id="password"
-                           placeholder="닉네임과 다른 4자이상만 가능합니다.">
-                </div>
-            </div>
-            <div style="display: flex; justify-content: center; margin-top: 30px;">
-                <button onclick="login()" type="button" class="btn btn-outline-secondary">Hanghae Log</button>
-            </div>
-          
+  </head>
+  <body>
+    <h1 style="text-align: center; margin-top: 50px" onclick="window.location.href='/'">항해 Log</h1>
+    <div style="width: 900px; height: 300px; margin: 100px auto">
+      <div class="form-box">
+        <div class="row mb-3">
+          <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+          <div class="col-sm-10">
+            <input style="margin-right: 10px" type="email" class="form-control" id="email" placeholder="아이디는 3자이상 영문자와 숫자만 가능합니다." />
+          </div>
         </div>
-        <span style="display: block; text-align: center; margin-top: 30px; color: blueviolet;">Aren't you a member of hanghae Log?</span>
-        <div style="margin: 40px auto; width: 50px; height: 50px">
-            <button onclick="window.location.href='/join'" class="btn btn-outline-secondary" type="button">Yes!</button>
+
+        <div class="row mb-3">
+          <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+          <div class="col-sm-10">
+            <input type="password" class="form-control" id="password" placeholder="닉네임과 다른 4자이상만 가능합니다." />
+          </div>
         </div>
+        <div style="display: flex; justify-content: center; margin-top: 30px">
+          <button onclick="login()" type="button" class="btn btn-outline-secondary">Hanghae Log</button>
+        </div>
+      </div>
+      <span style="display: block; text-align: center; margin-top: 30px; color: blueviolet">Aren't you a member of hanghae Log?</span>
+      <div style="margin: 40px auto; width: 50px; height: 50px">
+        <button onclick="window.location.href='/join'" class="btn btn-outline-secondary" type="button">Yes!</button>
+      </div>
     </div>
-</body>
+  </body>
 </html>

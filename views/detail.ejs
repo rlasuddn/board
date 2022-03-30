@@ -1,177 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script
-            src="https://code.jquery.com/jquery-3.5.1.js"
-            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
-            crossorigin="anonymous"></script>
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-            crossorigin="anonymous">
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-            crossorigin="anonymous"></script>
-        <title>Document</title>
-        <script>
-            // let userId;
-            let nickname
-         $(document).ready(function () {
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
+    <title>Document</title>
+    <script>
+      // let userId;
+      let nickname;
+      $(document).ready(function () {
+        // if (localStorage.getItem("token")){
+        //     getSelf(function(user){
 
-            // if (localStorage.getItem("token")){
-            //     getSelf(function(user){
+        //         userId = user
+        //     })
+        // }
 
-            //         userId = user
-            //     })   
-            // }
+        //조건문으로 함수를 실행한다.
+        if (localStorage.getItem("token")) {
+          getSelf();
+        } else {
+          comments();
+        }
+        posting();
+        function getSelf() {
+          $.ajax({
+            type: "GET",
+            url: "/user/check",
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            success: function (response) {
+              nickname = response.nickname;
+              userComments(nickname);
+              showprofile(nickname);
+            },
+            error: function () {},
+          });
+        }
+      });
 
-            //조건문으로 함수를 실행한다.
-            if (localStorage.getItem("token")){
-                getSelf()
-            }else{
-                comments()
-            }
-            posting();
-            function getSelf() {
-                $.ajax({
-                    type: "GET",
-                    url: "/user/check",
-                    headers: {
-                        authorization: `Bearer ${localStorage.getItem("token")}`
-                    },
-                    success: function (response) {
-                        nickname = response.nickname
-                        userComments(nickname)
-                        showprofile(nickname)
-                    },
-                    error: function () {
-                    }
-                })
-            }
-        })
-    
-            // function getSelf(callback) {
-            //     $.ajax({
-            //         type: "GET",
-            //         url: "/user/check",
-            //         headers: {
-            //         authorization: `Bearer ${localStorage.getItem("token")}`,
-            //         },
-            //         success: function (response) {
-            //             callback(response.user.nickname)
-            //         },
-            //         error: function (xhr, status, error) {
-            //             if (status == 401) {
-            //                 alert("로그인이 필요합니다.");
-            //             } else {
-            //                 localStorage.clear();
-            //                 alert("알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요.");
-            //             }
-            //             window.location.href = "/login";
-            //             },
-            //     });
-            //  }
-            
-            //사용자가 입력한 정보를 그대로 보여준다.
-            function posting() {
-                $.ajax({
-                    type: "GET",
-                    url: `/views/<%=id["id"]%>`,
-                    data: {},
-                    success: function (response) {
-                        let post = response["post"]
-                        $('#title').val(post['title'])
-                        $('#name').val(post['name'])
-                        $('#content').val(post['content'])
-                        $('#date').val(post['date'])
-                    }
-                });
-            }
+      // function getSelf(callback) {
+      //     $.ajax({
+      //         type: "GET",
+      //         url: "/user/check",
+      //         headers: {
+      //         authorization: `Bearer ${localStorage.getItem("token")}`,
+      //         },
+      //         success: function (response) {
+      //             callback(response.user.nickname)
+      //         },
+      //         error: function (xhr, status, error) {
+      //             if (status == 401) {
+      //                 alert("로그인이 필요합니다.");
+      //             } else {
+      //                 localStorage.clear();
+      //                 alert("알 수 없는 문제가 발생했습니다. 관리자에게 문의하세요.");
+      //             }
+      //             window.location.href = "/login";
+      //             },
+      //     });
+      //  }
 
-            //게시글 수정
-            function update_post() {
-                    if(!localStorage.getItem("token")){
-                    alert("Login first!!!")
-                    window.location.href="/"
-                    return
-                }
-                let checkPw = prompt("비밀번호를 입력해주세요")
+      //사용자가 입력한 정보를 그대로 보여준다.
+      function posting() {
+        $.ajax({
+          type: "GET",
+          url: `/views/<%=id["id"]%>`,
+          data: {},
+          success: function (response) {
+            let post = response["post"];
+            $("#title").val(post["title"]);
+            $("#name").val(post["name"]);
+            $("#content").val(post["content"]);
+            $("#date").val(post["date"]);
+          },
+        });
+      }
 
-                $.ajax({
-                    type: "PATCH",
-                    url: `/update/<%= id["id"] %>`,
-                    data: {
-                        title: $("#title").val(),
-                        content: $("#content").val(),
-                        pw: checkPw
-                    },
-                    success: function (response) {
-                        if (response["result"] === "success") {
-                            alert(response['result'])
-                            window.location.href = '/'
-                        }else{
-                            alert(response['result'])
-                        }
-                    },
-                    error: function (request, status, error) {
-                        alert(request.responseJSON["result"]);
-                    }
-                });
-            }
+      //게시글 수정
+      function update_post() {
+        if (!localStorage.getItem("token")) {
+          alert("Login first!!!");
+          window.location.href = "/";
+          return;
+        }
+        let checkPw = prompt("비밀번호를 입력해주세요");
 
-            //게시글 삭제
-            function delete_post() {
-                if(!localStorage.getItem("token")){
-                    alert("Login first!!!")
-                    window.location.href="/"
-                    return
-                }
-                let checkPw = prompt("비밀번호를 입력해주세요")
-                let content = $('#content').val()
-                $.ajax({
-                    type: "DELETE",
-                    url: `/delete/<%= id["id"] %>`,
-                    data: {
-                        pw: checkPw,
-                        content: content
-                    },
-                    success: function (response) {
-                        if (response["result"] === "success") {
-                            window.location.href = '/'
-                        } else {
-                            alert(response["result"])
-                        }
-                    }
-                });
+        $.ajax({
+          type: "PATCH",
+          url: `/update/<%= id["id"] %>`,
+          data: {
+            title: $("#title").val(),
+            content: $("#content").val(),
+            pw: checkPw,
+          },
+          success: function (response) {
+            if (response["result"] === "success") {
+              alert(response["result"]);
+              window.location.href = "/";
+            } else {
+              alert(response["result"]);
             }
-            
-            //로그인 한 시용자의 댓글 조회
-            //유저의 이름을 받아와서 함수들에 전달해준다.
-            function userComments(nickname) {
-                $.ajax({
-                    type: "GET",
-                    url: '/comments/<%=id["id"]%>',
-                    data: {},
-                    success: function (response) {
-                        comments = response['comments']
-                        for (i = 0; i < comments.length; i++) {
-                            let comment = comments[i]['comment']
-                            let name = comments[i]['name']
-                            let id = comments[i]['id']
-                            let username = nickname
-                            userMakeComment(comment,name,id)
-                            showUpdateButton(name,nickname,id)
-                        }
-                    }
-                })
+          },
+          error: function (request, status, error) {
+            alert(request.responseJSON["result"]);
+          },
+        });
+      }
+
+      //게시글 삭제
+      function delete_post() {
+        if (!localStorage.getItem("token")) {
+          alert("Login first!!!");
+          window.location.href = "/";
+          return;
+        }
+        let checkPw = prompt("비밀번호를 입력해주세요");
+        let content = $("#content").val();
+        $.ajax({
+          type: "DELETE",
+          url: `/delete/<%= id["id"] %>`,
+          data: {
+            pw: checkPw,
+            content: content,
+          },
+          success: function (response) {
+            if (response["result"] === "success") {
+              window.location.href = "/";
+            } else {
+              alert(response["result"]);
             }
-            function userMakeComment(comment,name,id){
-                const tempHtml = ` 
+          },
+        });
+      }
+
+      //로그인 한 시용자의 댓글 조회
+      //유저의 이름을 받아와서 함수들에 전달해준다.
+      function userComments(nickname) {
+        $.ajax({
+          type: "GET",
+          url: '/comments/<%=id["id"]%>',
+          data: {},
+          success: function (response) {
+            comments = response["comments"];
+            for (i = 0; i < comments.length; i++) {
+              let comment = comments[i]["comment"];
+              let name = comments[i]["name"];
+              let id = comments[i]["id"];
+              let username = nickname;
+              userMakeComment(comment, name, id);
+              showUpdateButton(name, nickname, id);
+            }
+          },
+        });
+      }
+      function userMakeComment(comment, name, id) {
+        const tempHtml = ` 
                 <tr>
                     <td id="commentName${id}">${name}</td>
                     <td id="commentContent${id}">${comment}</td>
@@ -218,233 +215,198 @@
                         </button>
                     </td>
                 <tr>
-                `
-                $('#comment-list').append(tempHtml)         
-        }
-            
-            //로그인을 안한 사용자의 댓글 조회
-            function comments() {
-                $.ajax({
-                    type: "GET",
-                    url: '/comments/<%=id["id"]%>',
-                    data: {},
-                    success: function (response) {
-                        comments = response['comments']
-                        for (i = 0; i < comments.length; i++) {
-                            let comment = comments[i]['comment']
-                            let name = comments[i]['name']
-                            
-                            makeComment(comment,name)
-                        }
-                    }
-                })
+                `;
+        $("#comment-list").append(tempHtml);
+      }
+
+      //로그인을 안한 사용자의 댓글 조회
+      function comments() {
+        $.ajax({
+          type: "GET",
+          url: '/comments/<%=id["id"]%>',
+          data: {},
+          success: function (response) {
+            comments = response["comments"];
+            for (i = 0; i < comments.length; i++) {
+              let comment = comments[i]["comment"];
+              let name = comments[i]["name"];
+
+              makeComment(comment, name);
             }
-            function makeComment(comment,name){
-                const tempHtml = ` <tr>
+          },
+        });
+      }
+      function makeComment(comment, name) {
+        const tempHtml = ` <tr>
                                     <td>${name}</td>
                                     <td>${comment}</td>
                                     <td>
-                                 </tr>`
-                $('#comment-list').append(tempHtml) 
-            }
+                                 </tr>`;
+        $("#comment-list").append(tempHtml);
+      }
 
-            //로그인한 사용자의 이름과 댓글 작성자의 이름이 같으면 해당댓글의 버튼을 보여준다.
-            function showUpdateButton(name,nickname,id){
-                console.log(nickname,name)
-                if(name === nickname){
-                    $(`#showUpdate${id}`).show()
-                }
-            }
+      //로그인한 사용자의 이름과 댓글 작성자의 이름이 같으면 해당댓글의 버튼을 보여준다.
+      function showUpdateButton(name, nickname, id) {
+        console.log(nickname, name);
+        if (name === nickname) {
+          $(`#showUpdate${id}`).show();
+        }
+      }
 
-            //보여준 버튼을 누르면 실행된다.
-            function updateButton(id){
-                $(`#update_comment${id}`).show()
-                $(`#updateButton${id}`).show()
-                $(`#deleteButton${id}`).show()
-                $(`#closeButton${id}`).show()
-                $(`#commentName${id}`).hide()   
-                $(`#commentContent${id}`).hide()   
-                $(`#showUpdate${id}`).hide()   
-            }
+      //보여준 버튼을 누르면 실행된다.
+      function updateButton(id) {
+        $(`#update_comment${id}`).show();
+        $(`#updateButton${id}`).show();
+        $(`#deleteButton${id}`).show();
+        $(`#closeButton${id}`).show();
+        $(`#commentName${id}`).hide();
+        $(`#commentContent${id}`).hide();
+        $(`#showUpdate${id}`).hide();
+      }
 
-            //닫기 버튼을 누르면 실행된다.
-            function closeUpdate(){
-                window.location.reload()
-            }
-            
-            //댓글 삭제
-            function deleteComment(commentId) {
-                if (confirm("really????")) {
-                    $.ajax({
-                        type: "DELETE",
-                        url: '/comments',
-                        data: {
-                            id: commentId
-                        },
-                        success: function (response) {
-                            window.location.reload()
-                        },
-                        error: function(response){
-                            alert(response['Message'])
-                            window.location.reload()
-                        }
-                    })
-                }
-            }
-        
-            //댓글 수정
-            function updateComment(commentId){
-                let comment = $(`#update_comment${commentId}`).val()
-                
-                $.ajax({
-                        type: "PATCH",
-                        url: '/comments',
-                        data: {
-                            id: commentId,
-                            comment:comment
-                        },
-                        success: function (response) {
-                            alert(response['Message'])
-                            window.location.reload()
-                        },
-                        error: function(response){
-                            alert(response['Message'])
-                            window.location.reload()
-                        }
-                    })
-            }
+      //닫기 버튼을 누르면 실행된다.
+      function closeUpdate() {
+        window.location.reload();
+      }
 
-            // 댓글 작성
-            // 로그인한 유저만 가능하고 아무것도 입력을 안하면 메세지를 띄워준다.
-            function writeComment() {
-                let comment = $('#comment').val()
-                $.ajax({
-                    type: "POST",
-                    url: '/comments/<%=id["id"]%>',
-                    data: {
-                        comment: comment
-                    },
-                    headers: {
-                        authorization: `Bearer ${localStorage.getItem("token")}`
-                    },
-                    success: function (response) {
-                        alert(response['Message'])
-                        window
-                            .location
-                            .reload()
-                    },
-                    error: function (request, status, error) {
-                        alert(request.responseJSON["Message"]);
-                        window
-                            .location
-                            .reload()
-                    }
-                });
-            }
-            
-            //로그인한 사용자의 이름을 보여준다.
-            function showprofile(name) {
-           let tempHtml = `<a class="nav-link" href="">${name}</a>`
-            $('.nickname').append(tempHtml)
-             }
-        </script>
-    </head>
-    <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">항해 Log</a>
-                <button
-                    class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav"
-                    aria-controls="navbarNav"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/create">Create</a>
-                        </li>
-                        <li class="nav-item nickname">
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+      //댓글 삭제
+      function deleteComment(commentId) {
+        if (confirm("really????")) {
+          $.ajax({
+            type: "DELETE",
+            url: "/comments",
+            data: {
+              id: commentId,
+            },
+            success: function (response) {
+              window.location.reload();
+            },
+            error: function (response) {
+              alert(response["Message"]);
+              window.location.reload();
+            },
+          });
+        }
+      }
 
-        <div  class="input-box">
-            <div class="input-group mb-3">
-                <span class="input-group-text">title</span>
-                <input
-                    id="title"
-                    type="text"
-                    class="form-control"
-                    placeholder="Username"
-                    aria-label="Username"
-                    aria-describedby="basic-addon1">
-            </div>
+      //댓글 수정
+      function updateComment(commentId) {
+        let comment = $(`#update_comment${commentId}`).val();
 
-            <div class="input-group mb-3">
-                <span class="input-group-text">content</span>
-                <input
-                    id="content"
-                    type="text"
-                    class="form-control"
-                    aria-label="Amount (to the nearest dollar)">
-            </div>
-            <div class="input-group mb-3">
-                <span class="input-group-text">name</span>
-                <input
-                    disabled="disabled"
-                    id="name"
-                    type="text"
-                    class="form-control"
-                    aria-label="Amount (to the nearest dollar)">
-            </div>
-            <div class="input-group mb-3">
-                <span class="input-group-text">date</span>
-                <input
-                    id="date"
-                    type="text"
-                    class="form-control"
-                    aria-label="Amount (to the nearest dollar)">
-                <button onclick="update_post()" class="btn btn-outline-warning" type="button">Update</button>
-                <button onclick="delete_post()" class="btn btn-outline-danger" type="button">Delete</button>
-            </div>
+        $.ajax({
+          type: "PATCH",
+          url: "/comments",
+          data: {
+            id: commentId,
+            comment: comment,
+          },
+          success: function (response) {
+            alert(response["Message"]);
+            window.location.reload();
+          },
+          error: function (response) {
+            alert(response["Message"]);
+            window.location.reload();
+          },
+        });
+      }
 
+      // 댓글 작성
+      // 로그인한 유저만 가능하고 아무것도 입력을 안하면 메세지를 띄워준다.
+      function writeComment() {
+        let comment = $("#comment").val();
+        $.ajax({
+          type: "POST",
+          url: '/comments/<%=id["id"]%>',
+          data: {
+            comment: comment,
+          },
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          success: function (response) {
+            alert(response["Message"]);
+            window.location.reload();
+          },
+          error: function (request, status, error) {
+            alert(request.responseJSON["Message"]);
+            window.location.reload();
+          },
+        });
+      }
+
+      //로그인한 사용자의 이름을 보여준다.
+      function showprofile(name) {
+        let tempHtml = `<a class="nav-link" href="">${name}</a>`;
+        $(".nickname").append(tempHtml);
+      }
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">항해 Log</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/create">Create</a>
+            </li>
+            <li class="nav-item nickname"></li>
+          </ul>
         </div>
+      </div>
+    </nav>
 
-        <div class="input-group mb-3" style="margin-top: 100px;">
-            <span class="input-group-text">comment</span>
-            <input
-                id="comment"
-                type="text"
-                class="form-control"
-                placeholder="comment"
-                aria-label="comment"
-                aria-describedby="basic-addon1">
-            <button
-                onclick="writeComment()"
-                class="btn btn-outline-success"
-                type="button">Send</button>
-        </div>
-        
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">NAME</th>
-                    <th scope="col">TITLE</th>
-                </tr>
-            </thead>
-            <tbody id="comment-list">
-            </tbody>
-        </table>
-        
-    </body>
+    <div class="input-box">
+      <div class="input-group mb-3">
+        <span class="input-group-text">title</span>
+        <input id="title" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" />
+      </div>
+
+      <div class="input-group mb-3">
+        <span class="input-group-text">content</span>
+        <input id="content" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" />
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text">name</span>
+        <input disabled="disabled" id="name" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" />
+      </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text">date</span>
+        <input id="date" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" />
+        <button onclick="update_post()" class="btn btn-outline-warning" type="button">Update</button>
+        <button onclick="delete_post()" class="btn btn-outline-danger" type="button">Delete</button>
+      </div>
+    </div>
+
+    <div class="input-group mb-3" style="margin-top: 100px">
+      <span class="input-group-text">comment</span>
+      <input id="comment" type="text" class="form-control" placeholder="comment" aria-label="comment" aria-describedby="basic-addon1" />
+      <button onclick="writeComment()" class="btn btn-outline-success" type="button">Send</button>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">NAME</th>
+          <th scope="col">TITLE</th>
+        </tr>
+      </thead>
+      <tbody id="comment-list"></tbody>
+    </table>
+  </body>
 </html>
