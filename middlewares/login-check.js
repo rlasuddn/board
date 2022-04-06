@@ -9,7 +9,7 @@ module.exports = async (req, res, next) => {
   const [tokenType, tokenValue] = authorization.split(" ");
 
   if (tokenType !== "Bearer") {
-    res.status(401).send({
+    res.status(401).json({
       Message: "Login first!",
     });
     return;
@@ -24,7 +24,7 @@ module.exports = async (req, res, next) => {
     res.locals.user = user;
     next();
   } catch (err) {
-    res.status(401).send({
+    res.status(401).json({
       Message: "Login first!",
     });
     return;

@@ -12,7 +12,7 @@ module.exports = async (req, res, next) => {
     await PostUserSchema.validateAsync(req.body);
     next();
   } catch (e) {
-    res.status(400).send({
+    res.status(400).json({
       Message: e.message,
     });
     return;
